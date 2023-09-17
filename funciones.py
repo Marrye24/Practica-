@@ -56,7 +56,7 @@ def calcular_distancias(col_x, col_y, punto_referencia, dataframe, funcion_dista
         # Almacena la distancia en el diccionario
         distancias_dict[idx] = distancia
 
-    return distancias_dict
+    return distancias_dict
 
  # K Vecinos Cercanos
 def KNN(k, punto_referencia, diccionario, dataframe):

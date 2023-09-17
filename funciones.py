@@ -27,7 +27,7 @@ def distancia_mahalanobis(x1, x2, y1, y2, cov_matrix):
 
     x_minus_y = np.array([x1, y1]) - np.array([x2, y2])
     inv_cov_matrix = np.linalg.inv(cov_matrix)
- mahalanobis_distance = np.sqrt(np.dot(np.dot(x_minus_y, inv_cov_matrix), x_minus_y.T))
+    mahalanobis_distance = np.sqrt(np.dot(np.dot(x_minus_y, inv_cov_matrix), x_minus_y.T))
     return mahalanobis_distance
 
  #Distancia Minkowski
@@ -36,7 +36,6 @@ def distancia_minkowski(x1, x2, y1, y2, p):
     minkowski_distance = (np.sum(np.abs(x_minus_y) ** p)) ** (1/p)
     return minkowski_distance
 
- 
  #Generar el diccionario con las distancias
 def calcular_distancias(col_x, col_y, punto_referencia, dataframe, funcion_distancia, cov_matrix=None):
     # Columnas a utilizar para el cálculo de distancia
@@ -58,3 +57,28 @@ def calcular_distancias(col_x, col_y, punto_referencia, dataframe, funcion_dista
         distancias_dict[idx] = distancia
 
     return distancias_dict
+
+ # K Vecinos Cercanos
+def KNN(k, punto_referencia, diccionario, dataframe):
+    # Eliminar elementos con distancia 0 (punto de referencia)
+    diccionario = {clave: valor for clave, valor in diccionario.items() if valor > 0}
+    
+    # Ordenar el diccionario de distancias
+    distancias_ordenadas = sorted(diccionario.items(), key=lambda x: x[1])
+    
+    # Seleccionar KNN
+    k_vecinos = distancias_ordenadas[:k]
+    
+    # Buscar k vecinos cercanos en el df
+    registros_vecinos = [dataframe.iloc[i] for i, _ in k_vecinos]
+    
+    # Imprimir los K vecinos más cercanos
+    print(f"\n\nLos {k} vecinos más cercanos son:")
+    for i, distancia in k_vecinos:
+        print(f"Índice: {i}, Distancia: {distancia}, Clase: {dataframe.iloc[i]['class']}")
+    
+    # Retornar la clase estimada
+    clases_vecinos = [vecino['class'] for vecino in registros_vecinos]
+    clase_estimada = max(set(clases_vecinos), key=clases_vecinos.count)
+    
+    return clase_estimada

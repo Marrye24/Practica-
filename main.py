@@ -87,4 +87,24 @@ registros
 
 #%% CSV
 registros.to_csv('estimaciones.csv', index=True, index_label="Index")
+
+
 #%% GRÁFICA
+
+import pandas as pd
+import plotly.express as px
+
+# Crear una figura interactiva con Plotly Express
+fig = px.scatter(iris, x=x, y=y, color='class', title="Clasificación KNN", hover_name='class')
+
+# Agrupar los registros al azar bajo una misma clase 
+registros['custom_class'] = 'Punto al Azar'
+registros['hover_text'] = registros.apply(lambda row: [f"Euclidiana: {row['Euclidiana']}", "\n"f"Manhattan: {row['Manhattan']}", "\n"f"Mahalanobis: {row['Mahalanobis']}"], axis=1)
+
+color_discrete_map = {'Punto al Azar': 'yellow'} 
+
+fig.add_trace(px.scatter(registros, x=x, y=y, color='custom_class', 
+                         hover_name='hover_text', size_max=10, opacity=0.7, color_discrete_map=color_discrete_map).data[0])
+
+# Mostrar la gráfica 
+fig.show()
